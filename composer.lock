@@ -4,15 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "346cfed7a10b9d392e99e4aa7f138e88",
+    "content-hash": "ed61d8fc38e89a21f35dce52c50fe281",
     "packages": [
         {
             "name": "aventus/laraventus",
-            "version": "0.0.1",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Cobwebsite/Laraventus.git",
+                "reference": "355c0b8416c18e44d13b5a0a4ae40a6316f5d654"
+            },
             "dist": {
-                "type": "path",
-                "url": "../src",
-                "reference": "083b1100f072bd515cbea35a27a145a4dd92f38b"
+                "type": "zip",
+                "url": "https://api.github.com/repos/Cobwebsite/Laraventus/zipball/355c0b8416c18e44d13b5a0a4ae40a6316f5d654",
+                "reference": "355c0b8416c18e44d13b5a0a4ae40a6316f5d654",
+                "shasum": ""
             },
             "require": {
                 "illuminate/container": "^12.0",
@@ -21,11 +27,19 @@
                 "laravel/framework": "^12.0"
             },
             "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Aventus\\Laraventus\\ServiceProvider"
+                    ]
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "Aventus\\Laraventus\\": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -35,9 +49,12 @@
                     "email": "info@cobwebsite.ch"
                 }
             ],
-            "transport-options": {
-                "relative": true
-            }
+            "description": "A Laravel overlay providing extra tools and abstractions to accelerate application development.",
+            "support": {
+                "issues": "https://github.com/Cobwebsite/Laraventus/issues",
+                "source": "https://github.com/Cobwebsite/Laraventus/tree/1.0.0"
+            },
+            "time": "2025-09-23T12:51:00+00:00"
         },
         {
             "name": "brick/math",
@@ -5759,9 +5776,7 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "aventus/laraventus": 20
-    },
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {},
