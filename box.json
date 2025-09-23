@@ -1,0 +1,13 @@
+{
+    "main": "bin/laraventus",
+    "output": "PhptoTypescript.phar",
+    "chmod": "0755",
+    "directories": [
+        "src/",
+        "vendor/"
+    ],
+    "files": [
+        "composer.json"
+    ],
+    "stub": false
+}

@@ -1,0 +1,28 @@
+{
+    "name": "aventus/transpiler",
+    "type": "library",
+    "version": "0.0.1",
+    "license": "MIT",
+    "repositories": [
+        {
+            "type": "path",
+            "url": "..\\src"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Aventus\\Transpiler\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Cobwebsite",
+            "email": "info@cobwebsite.ch"
+        }
+    ],
+    "require": {
+        "nikic/php-parser": "^5.4",
+        "aventus/laraventus": "@dev",
+        "phpstan/phpdoc-parser": "^2.0"
+    }
+}

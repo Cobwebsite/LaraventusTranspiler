@@ -1,0 +1,22 @@
+#!/usr/bin/env php
+<?php
+
+require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../src/Tools/functions.php';
+
+use Aventus\Transpiler\Parser\Parser;
+use Aventus\Transpiler\Writer\FileToWrite;
+
+if(count($argv) >= 2) {
+    try {
+    $path = $argv[1];
+    $parser = new Parser($path);
+    $parser->parse();
+    FileToWrite::writeAll();
+    } catch(Exception $e) {
+        error($e->getMessage());
+    }
+}
+else {
+    error("Please provide a folder path or a config path");
+}
