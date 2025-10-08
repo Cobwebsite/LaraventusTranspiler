@@ -4,10 +4,10 @@ import { dirname, join, normalize, relative } from 'path'
 import { exec } from 'child_process'
 
 
-const rootDir = normalize(process.cwd() + '/..');
+const rootDir = normalize(process.cwd() + '/');
 const srcDir = join(rootDir, 'src');
-const targetDir = join(rootDir, 'transpiler', 'vendor', 'aventus', 'laraventus');
-const transpilerDir = join(rootDir, 'transpiler');
+const targetDir = join(rootDir, 'vendor', 'aventus', 'laraventus');
+const transpilerDir = join(rootDir);
 const outputBin = join(transpilerDir, "PhptoTypescript.phar")
 const extensionOutput = "D:\\Aventus\\Aventus\\lib\\bin\\PhpToTypescript\\PhptoTypescript.phar"
 

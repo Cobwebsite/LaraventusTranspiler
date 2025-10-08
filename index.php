@@ -6,7 +6,7 @@ require __DIR__ . '/src/Tools/functions.php';
 use Aventus\Transpiler\Parser\Parser;
 use Aventus\Transpiler\Writer\FileToWrite;
 
-$parser = new Parser("C:\\Projets\\av\\AventusStore\\aventus.php.avt");
+$parser = new Parser("D:\\Aventus\\LarAventus\\Laraventus\\aventus.php.avt");
 // $parser = new Parser("D:\\fc_vetroz\\Inventaire\\aventus.php.avt");
 $parser->parse();
 FileToWrite::writeAll();

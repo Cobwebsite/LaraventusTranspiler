@@ -259,6 +259,9 @@ abstract class BaseContainer
         else if ($fullName == "Aventus\\Laraventus\\Models\\AventusImage") $result = "AventusPhp.AventusImage";
         else if ($fullName == "Aventus\\Laraventus\\Helpers\\AventusError") $result = "AventusPhp.AventusError";
         else if ($fullName == "Aventus\\Laraventus\\Controllers\\ModelController") $result = "AventusPhp.ModelController";
+        else if ($fullName == "Aventus\\Laraventus\\Exceptions\\LaraventusErrorEnum") $result = "AventusPhp.LaraventusErrorEnum";
+        else if ($fullName == "Aventus\\Laraventus\\Requests\\IdsManyRequest") $result = "AventusPhp.IdsManyRequest";
+        else if ($fullName == "Aventus\\Laraventus\\Requests\\ItemsManyRequest") $result = "AventusPhp.ItemsManyRequest";
         else if ($fullName == "JsonSerializable") $result = "";
         else if ($fullName == "list") {
             $isArray = true;

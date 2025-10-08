@@ -58,7 +58,7 @@ class FileToWrite
             }
             $result = $container::is($symbol, $fileName);
             if ($result !== null) {
-                // Console::log("register " . $symbol->name . " as " . $result::class);
+                Console::log("register " . $symbol->name . " as " . $result::class);
                 self::addBaseContainer($result, $fileName);
                 break;
             }
@@ -281,7 +281,7 @@ class FileToWrite
 
         $realPath = $this->path . $this->getExtension();
 
-        // Console::log("Writing " . $realPath);
+        Console::log("Writing " . $realPath);
         file_put_contents($realPath, implode("\r\n", $txt));
     }
 }

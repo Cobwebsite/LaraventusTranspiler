@@ -2,6 +2,7 @@
 
 namespace Aventus\Transpiler\Config;
 
+use Aventus\Laraventus\Tools\Console;
 use Aventus\Transpiler\Tools\Type;
 use Exception;
 use PhpParser\Node\Stmt\Const_;
@@ -27,6 +28,7 @@ class ProjectConfig
 
         $content = file_get_contents($path . $file);
         self::$config = Type::fromJson(ProjectConfig::class, $content);
+
         self::$config->isAventus = $isAventus;
         self::$config->prepare();
     }
@@ -66,6 +68,8 @@ class ProjectConfig
         if (!$this->isAventus) {
             $this->useNamespace = false;
         }
+
+        $this->replacer->prepare();
     }
 
     public static function absoluteUrl(string $url): string
