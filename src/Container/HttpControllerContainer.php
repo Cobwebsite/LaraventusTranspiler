@@ -3,6 +3,7 @@
 namespace Aventus\Transpiler\Container;
 
 use Aventus\Laraventus\Attributes\Export;
+use Aventus\Laraventus\Controllers\ModelController;
 use Aventus\Laraventus\Models\AventusModel;
 use Aventus\Laraventus\Tools\Console;
 use Aventus\Transpiler\Parser\PHPClass;
@@ -31,8 +32,11 @@ class HttpControllerContainer extends BaseContainer
     /** @var HttpRouteContainer[] $routes */
     private array $routes = [];
     public ?string $prefix = null;
-    /** @var array<string, string> */
+    /** @var array<string, string|string[]> */
     public array $additionalFcts = [];
+
+    public ?string $typeRequest;
+    public ?string $typeResource;
 
     public function __construct(
         PHPClass $class
@@ -51,6 +55,8 @@ class HttpControllerContainer extends BaseContainer
 
     protected function writeAction(): string
     {
+
+
         $result = [];
         if (ProjectConfig::$config->useNamespace && strlen($this->namespace) > 0) {
             $this->addIndent();
@@ -65,6 +71,21 @@ class HttpControllerContainer extends BaseContainer
             $this->addTxt("public override getPrefix(): string { return \"" . $this->prefix . "\"; }", $result);
         }
 
+        if ($this->symbol instanceof PHPClass && $this->symbol->extends(ModelController::class) && $this->symbol->parent != null) {
+            $type = $this->symbol->parent->type;
+            if (count($type->generics) > 1) {
+                $name = $this->getTypeName($type->generics[1]);
+                $this->addTxt("/** @inheritdoc */", $result);
+                $this->addTxt("public override getRequest(): new () => " . $name . " { return " . $name . "; }", $result);
+            }
+            if (count($type->generics) > 2) {
+                $name = $this->getTypeName($type->generics[2]);
+                $this->addTxt("/** @inheritdoc */", $result);
+                $this->addTxt("public override getResource(): new () => " . $name . " { return " . $name . "; }", $result);
+            }
+        }
+
+
 
         $routerConfig = ProjectConfig::$config->httpRouter;
         if ($routerConfig->createRouter) {
@@ -75,6 +96,7 @@ class HttpControllerContainer extends BaseContainer
             $file = ProjectConfig::absoluteUrl($outputPath);
             $this->addImport($file, $routerConfig->routerName);
         }
+
 
         $result[] = $this->getContent();
         $this->addTxtClose("}", $result);
@@ -105,10 +127,8 @@ class HttpControllerContainer extends BaseContainer
     private function getContent(): string
     {
         $result = [];
-        /** @var array<string, string> */
+        /** @var array<string, string|string[]> */
         $functionNeeded = [];
-
-
 
         foreach ($this->routes as $route) {
             $result[] = $route->write();
@@ -125,9 +145,16 @@ class HttpControllerContainer extends BaseContainer
             }
         }
         foreach ($functionNeeded as $key => $fct) {
-            $result[] = $fct;
+            if (is_array($fct)) {
+                $temp = [];
+                foreach ($fct as $f) {
+                    $this->addTxt($f, $temp);
+                }
+                $result[] = implode("\r\n", $temp);
+            } else {
+                $this->addTxt($fct, $result);
+            }
         }
-
 
         return implode("\r\n\r\n", $result);
     }

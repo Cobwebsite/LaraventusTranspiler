@@ -58,7 +58,7 @@ class PHPClass extends PHPSymbol
     public array $traits = [];
     public bool $isController = false;
 
-    /** @var array<string, string> */
+    /** @var array<string, string|string[]> */
     public array $additionalFcts = [];
 
 

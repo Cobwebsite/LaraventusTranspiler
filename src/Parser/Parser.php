@@ -142,7 +142,7 @@ class Parser
                         $classDone = $app->make($class->getFullname());
                         $overrideUri = $classDone->overrideUri($uri);
                         $uri = $overrideUri[0];
-                        $class->additionalFcts["getUri"] = 'public override getUri(): string { return "' . $overrideUri[1] . '"; }';
+                        $class->additionalFcts["getUri"] = ['/** @inheritdoc */', 'public override getUri(): string { return "' . $overrideUri[1] . '"; }'];
                     }
                     $methodInfo->ctrlInfo[] = new PHPClassMethodCtrlInfo(
                         $uri,

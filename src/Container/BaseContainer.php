@@ -252,9 +252,18 @@ abstract class BaseContainer
         } else if ($fullName == "Illuminate\\Http\\UploadedFile") $result = "File";
         else if ($fullName == "Aventus\\Laraventus\\Models\\AventusModel") $result = "Aventus.Data";
         else if ($fullName == "Aventus\\Laraventus\\Requests\\AventusRequest") $result = "";
-        else if ($fullName == "Aventus\\Laraventus\\Resources\\AventusModelResource") $result = "";
-        else if ($fullName == "Aventus\\Laraventus\\Resources\\AventusResource") $result = "";
-        else if ($fullName == "Aventus\\Laraventus\\Resources\\AventusAutoBindResource") $result = "";
+        else if ($fullName == "Aventus\\Laraventus\\Resources\\AventusModelResource") {
+            $result = "Aventus.Data";
+            $isFull = true;
+        }
+        else if ($fullName == "Aventus\\Laraventus\\Resources\\AventusResource") {
+            $result = "Aventus.Data";
+            $isFull = true;
+        }
+        else if ($fullName == "Aventus\\Laraventus\\Resources\\AventusAutoBindResource") {
+            $result = "Aventus.Data";
+            $isFull = true;
+        }
         else if ($fullName == "Aventus\\Laraventus\\Models\\AventusFile") $result = "AventusPhp.AventusFile";
         else if ($fullName == "Aventus\\Laraventus\\Models\\AventusImage") $result = "AventusPhp.AventusImage";
         else if ($fullName == "Aventus\\Laraventus\\Helpers\\AventusError") $result = "AventusPhp.AventusError";
@@ -263,7 +272,11 @@ abstract class BaseContainer
         else if ($fullName == "Aventus\\Laraventus\\Requests\\IdsManyRequest") $result = "AventusPhp.IdsManyRequest";
         else if ($fullName == "Aventus\\Laraventus\\Requests\\ItemsManyRequest") $result = "AventusPhp.ItemsManyRequest";
         else if ($fullName == "JsonSerializable") $result = "";
-        else if ($fullName == "list") {
+        else if (
+            $fullName == "list" || 
+            $fullName == "Illuminate\\Database\\Eloquent\\Collection" || 
+            $fullName == "Illuminate\Support\Collection"
+        ) {
             $isArray = true;
             if (count($type->generics) == 0) {
                 $result = "any";
