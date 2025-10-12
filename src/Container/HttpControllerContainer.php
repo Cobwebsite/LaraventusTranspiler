@@ -83,6 +83,11 @@ class HttpControllerContainer extends BaseContainer
                 $this->addTxt("/** @inheritdoc */", $result);
                 $this->addTxt("public override getResource(): new () => " . $name . " { return " . $name . "; }", $result);
             }
+            if (count($type->generics) > 3) {
+                $name = $this->getTypeName($type->generics[3]);
+                $this->addTxt("/** @inheritdoc */", $result);
+                $this->addTxt("public override getResourceDetails(): new () => " . $name . " { return " . $name . "; }", $result);
+            }
         }
 
 

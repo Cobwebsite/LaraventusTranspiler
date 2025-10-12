@@ -7,7 +7,7 @@ use Aventus\Transpiler\Parser\Parser;
 use Aventus\Transpiler\Writer\FileToWrite;
 
 // $parser = new Parser("D:\\Aventus\\LarAventus\\Laraventus\\aventus.php.avt");
-$parser = new Parser("C:\\Projets\\vet\\aventus.php.avt");
+$parser = new Parser("D:\\fc_vetroz\\Inventaire\\aventus.php.avt");
 $parser->parse();
 FileToWrite::writeAll();
 

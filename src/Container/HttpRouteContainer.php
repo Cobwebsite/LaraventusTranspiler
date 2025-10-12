@@ -196,6 +196,9 @@ class HttpRouteContainer
         $this->parent->addTxtOpen($fctDesc, $result);
         $this->parent->addTxt($request, $result);
         if (strlen($body) > 0) {
+            if (in_array(strtoupper($this->httpMethods[0]), ["DELETE", "PUT"])) {
+                $this->parent->addTxt("request.enableMethodSpoofing();", $result);
+            }
             $this->parent->addTxt($body, $result);
         }
         if (strlen($typeTxt) > 0) {
