@@ -169,7 +169,7 @@ class PHPType
             return $result;
         }
 
-        Console::log("PHPTYPE ligne 162");
+        Console::log("PHPTYPE ligne 172");
         Console::dump($node);
         die();
         return null;
