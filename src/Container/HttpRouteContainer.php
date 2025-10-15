@@ -3,13 +3,13 @@
 namespace Aventus\Transpiler\Container;
 
 use Aventus\Laraventus\Attributes\Export;
-use Aventus\Laraventus\Attributes\FctName;
 use Aventus\Laraventus\Attributes\Http\Delete;
 use Aventus\Laraventus\Attributes\Http\Get;
 use Aventus\Laraventus\Attributes\Http\Options;
 use Aventus\Laraventus\Attributes\Http\Post;
 use Aventus\Laraventus\Attributes\Http\Put;
 use Aventus\Laraventus\Attributes\Override;
+use Aventus\Laraventus\Attributes\Rename;
 use Aventus\Laraventus\Helpers\AventusError;
 use Aventus\Laraventus\Requests\AventusRequest;
 use Aventus\Laraventus\Resources\AventusResource;
@@ -63,7 +63,7 @@ class HttpRouteContainer
             $this->route = "/" . $this->route;
         }
 
-        $attr = $method->getAttribute(FctName::class);
+        $attr = $method->getAttribute(Rename::class);
         if ($attr != null) {
             $expr = $attr->args[0]->value;
             if ($expr instanceof String_) {
