@@ -1,6 +1,7 @@
 <p style="display:flex;justify-content:center">
     <img src="https://aventusjs.com/img/laraventus.svg" alt="Laraventus" height="250" />
 </p>
+
 # Laraventus
 
 A lightweight and elegant Laravel overlay that provides tools, conventions, and optimizations to speed up your web development workflow.
