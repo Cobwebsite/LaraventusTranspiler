@@ -281,7 +281,7 @@ abstract class BaseContainer
             if (count($type->generics) == 0) {
                 $result = "any";
             } else {
-                $result = $this->getTypeName($type->generics[0], $depth, $genericExtendsConstraint);
+                $result = $this->getTypeName($type->generics[count($type->generics) - 1], $depth, $genericExtendsConstraint);
             }
             $isFull = true;
         }
