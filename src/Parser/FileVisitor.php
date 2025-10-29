@@ -53,6 +53,8 @@ class FileVisitor extends NodeVisitorAbstract
         else if ($node instanceof Class_ || $node instanceof Interface_ || $node instanceof Trait_) {
             $phpClass = PHPClass::parse($node, $this->currentNamespace, $this->useStatements);
             if (!$phpClass) return;
+            if (isset($node->flags))
+                $phpClass->parseFlags(Type::parseModifiers($node->flags));
 
             $phpClass->uri = $this->uri;
             $phpClass->isOnlyQuick = $this->isQuick;

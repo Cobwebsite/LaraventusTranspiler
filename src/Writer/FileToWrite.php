@@ -2,6 +2,7 @@
 
 namespace Aventus\Transpiler\Writer;
 
+use Aventus\Laraventus\Attributes\Rename;
 use Aventus\Transpiler\Container\BaseContainer;
 use Aventus\Transpiler\Container\NormalClassContainer;
 use Aventus\Transpiler\Parser\PHPSymbol;
@@ -16,6 +17,7 @@ use Aventus\Transpiler\Container\StorableContainer;
 use Aventus\Transpiler\Parser\Parser;
 use Aventus\Transpiler\Parser\PHPClass;
 use Aventus\Transpiler\Tools\Path;
+use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Const_;
 
 class FileToWrite
@@ -58,7 +60,7 @@ class FileToWrite
             }
             $result = $container::is($symbol, $fileName);
             if ($result !== null) {
-                Console::log("register " . $symbol->name . " as " . $result::class);
+                // Console::log("register " . $symbol->name . " as " . $result::class);
                 self::addBaseContainer($result, $fileName);
                 break;
             }
@@ -197,6 +199,13 @@ class FileToWrite
                         $this->importByPath[$relativePath] = [];
                     }
                     $name = $symbol->name;
+                    $attr = $symbol->getAttribute(Rename::class);
+                    if ($attr != null) {
+                        $expr = $attr->args[0]->value;
+                        if ($expr instanceof String_) {
+                            $name = $expr->value;
+                        }
+                    }
                     if ($symbol instanceof PHPClass && $symbol->isInterface) {
                         $name = "type " . $name;
                     }
@@ -281,7 +290,7 @@ class FileToWrite
 
         $realPath = $this->path . $this->getExtension();
 
-        Console::log("Writing " . $realPath);
+        // Console::log("Writing " . $realPath);
         file_put_contents($realPath, implode("\r\n", $txt));
     }
 }

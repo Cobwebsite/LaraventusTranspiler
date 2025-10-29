@@ -185,15 +185,6 @@ abstract class BaseContainer
     public function getName()
     {
         $type = $this->symbol->type;
-        if ($type->symbol) {
-            $attr = $type->symbol->getAttribute(Rename::class);
-            if ($attr != null) {
-                $expr = $attr->args[0]->value;
-                if ($expr instanceof String_) {
-                    return $expr->value;
-                }
-            }
-        }
         return $this->getTypeName($type, 0, true);
     }
 
@@ -207,6 +198,7 @@ abstract class BaseContainer
                 }
                 return implode(" | ", $subTypesTxt);
             }
+
             $name = $type->isInternal ? $type->name : str_replace("\\", ".", $type->fullname);
             $isNullable = false;
             if ($type->isNullable) {
@@ -214,6 +206,7 @@ abstract class BaseContainer
             }
 
             $this->importType($type);
+
 
 
             $isFull = false;
@@ -255,16 +248,13 @@ abstract class BaseContainer
         else if ($fullName == "Aventus\\Laraventus\\Resources\\AventusModelResource") {
             $result = "Aventus.Data";
             $isFull = true;
-        }
-        else if ($fullName == "Aventus\\Laraventus\\Resources\\AventusResource") {
+        } else if ($fullName == "Aventus\\Laraventus\\Resources\\AventusResource") {
             $result = "Aventus.Data";
             $isFull = true;
-        }
-        else if ($fullName == "Aventus\\Laraventus\\Resources\\AventusAutoBindResource") {
+        } else if ($fullName == "Aventus\\Laraventus\\Resources\\AventusAutoBindResource") {
             $result = "Aventus.Data";
             $isFull = true;
-        }
-        else if ($fullName == "Aventus\\Laraventus\\Models\\AventusFile") $result = "AventusPhp.AventusFile";
+        } else if ($fullName == "Aventus\\Laraventus\\Models\\AventusFile") $result = "AventusPhp.AventusFile";
         else if ($fullName == "Aventus\\Laraventus\\Models\\AventusImage") $result = "AventusPhp.AventusImage";
         else if ($fullName == "Aventus\\Laraventus\\Helpers\\AventusError") $result = "AventusPhp.AventusError";
         else if ($fullName == "Aventus\\Laraventus\\Controllers\\ModelController") $result = "AventusPhp.ModelController";
@@ -273,8 +263,8 @@ abstract class BaseContainer
         else if ($fullName == "Aventus\\Laraventus\\Requests\\ItemsManyRequest") $result = "AventusPhp.ItemsManyRequest";
         else if ($fullName == "JsonSerializable") $result = "";
         else if (
-            $fullName == "list" || 
-            $fullName == "Illuminate\\Database\\Eloquent\\Collection" || 
+            $fullName == "list" ||
+            $fullName == "Illuminate\\Database\\Eloquent\\Collection" ||
             $fullName == "Illuminate\Support\Collection"
         ) {
             $isArray = true;
@@ -284,6 +274,16 @@ abstract class BaseContainer
                 $result = $this->getTypeName($type->generics[count($type->generics) - 1], $depth, $genericExtendsConstraint);
             }
             $isFull = true;
+        }
+
+        if ($type->symbol) {
+            $attr = $type->symbol->getAttribute(Rename::class);
+            if ($attr != null) {
+                $expr = $attr->args[0]->value;
+                if ($expr instanceof String_) {
+                    $result = $expr->value;
+                }
+            }
         }
 
         if ($isArray) {

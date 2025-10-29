@@ -2,7 +2,6 @@
 
 namespace Aventus\Transpiler\Parser;
 
-use Aventus\Laraventus\Tools\Console;
 use Aventus\Transpiler\Tools\Type;
 use PhpParser\Modifiers;
 use PhpParser\Node\Attribute;

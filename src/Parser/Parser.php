@@ -2,6 +2,7 @@
 
 namespace Aventus\Transpiler\Parser;
 
+use Aventus\Laraventus\Attributes\NoExport;
 use Aventus\Laraventus\Tools\Console;
 use Aventus\Transpiler\Config\ComposerConfig;
 use Aventus\Transpiler\Config\ProjectConfig;
@@ -109,11 +110,12 @@ class Parser
                     if (!Type::exportToTypesript($class, ProjectConfig::$config->exportHttpRouteByDefault)) {
                         continue;
                     }
+                    
                     if (!Type::exportToTypesript($methodInfo, ProjectConfig::$config->exportHttpRouteByDefault)) {
                         continue;
                     }
+                    
                     $class->isController = true;
-
                     $methodInfo->isExported = true;
                     $methods = [];
                     foreach ($route->methods() as $method) {

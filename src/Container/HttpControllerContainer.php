@@ -71,7 +71,7 @@ class HttpControllerContainer extends BaseContainer
             $this->addTxt("public override getPrefix(): string { return \"" . $this->prefix . "\"; }", $result);
         }
 
-        if ($this->symbol instanceof PHPClass && $this->symbol->extends(ModelController::class) && $this->symbol->parent != null) {
+        if ($this->symbol instanceof PHPClass && $this->symbol->extends(ModelController::class) && $this->symbol->parent != null && !$this->symbol->isAbstract) {
             $type = $this->symbol->parent->type;
             if (count($type->generics) > 1) {
                 $name = $this->getTypeName($type->generics[1]);
