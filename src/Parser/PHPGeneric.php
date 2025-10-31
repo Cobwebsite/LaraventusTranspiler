@@ -6,6 +6,7 @@ namespace Aventus\Transpiler\Parser;
  */
 class PHPGeneric
 {
+    public bool $isNoExport = false;
     public function __construct(
         public string $name,
         public ?PHPType $constraint,

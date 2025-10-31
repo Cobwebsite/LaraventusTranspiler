@@ -2,6 +2,7 @@
 
 namespace Aventus\Transpiler\Parser;
 
+use Aventus\Laraventus\Attributes\NoExport;
 use Aventus\Laraventus\Attributes\DefaultValue;
 use Aventus\Laraventus\Attributes\DefaultValueRaw;
 use Aventus\Laraventus\Tools\Console;
@@ -20,6 +21,7 @@ class PHPClassPropriete
     public bool $isPrivate = false;
     public bool $isProtected = false;
     public bool $isStatic = false;
+    public bool $isNoExportForce = false;
 
     public function __construct(
         public ?PHPClass $class,
@@ -33,7 +35,7 @@ class PHPClassPropriete
         if (str_starts_with($this->name, "$")) {
             $this->name = substr($this->name, 1);
         }
-        
+
         $defaultValue = $this->getAttribute(DefaultValue::class);
         if ($defaultValue !== null) {
             $this->default = $defaultValue->args[0]->value;
@@ -86,7 +88,16 @@ class PHPClassPropriete
             if ($doc->vars['']->description) {
                 $this->description = $doc->vars['']->description;
             }
+            if ($doc->vars[$this->name]->isNoExport) {
+                $this->isNoExportForce = $doc->vars[$this->name]->isNoExport;
+            }
         }
+    }
+
+    public function IsNoExport(): bool
+    {
+        if ($this->isNoExportForce) return true;
+        return $this->hasAttribute(NoExport::class);
     }
 
     public function hasAttribute(string $name): bool

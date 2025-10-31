@@ -223,7 +223,7 @@ abstract class BaseClassContainer extends BaseContainer
             if (in_array($property->name, $loadedFields)) {
                 continue;
             }
-            if ($property->hasAttribute(NoExport::class)) {
+            if ($property->isNoExport()) {
                 continue;
             }
             if (!$this->isValidProperty($property)) {

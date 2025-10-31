@@ -11,6 +11,7 @@ use PhpParser\Node\UseItem;
  */
 class PHPVarComment
 {
+    public bool $isNoExport = false;
     public function __construct(
         public string $identifier,
         public PHPType $type,

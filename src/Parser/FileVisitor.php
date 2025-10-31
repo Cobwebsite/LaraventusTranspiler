@@ -64,7 +64,8 @@ class FileVisitor extends NodeVisitorAbstract
 
                 $phpClass->generics = $doc->genericParameters;
                 $phpClass->type->generics = [];
-                foreach ($doc->genericParameters as $genericParameter) {
+                foreach ($doc->genericParameters as $name => $genericParameter) {
+                    if ($genericParameter->isNoExport) continue;
                     $phpClass->type->generics[] = $genericParameter->toPHPType();
                 }
 
