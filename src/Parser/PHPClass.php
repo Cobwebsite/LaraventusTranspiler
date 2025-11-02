@@ -4,6 +4,7 @@ namespace Aventus\Transpiler\Parser;
 
 use Aventus\Laraventus\Attributes\IsController;
 use Aventus\Laraventus\Attributes\NoExport;
+use Aventus\Laraventus\Tools\Console;
 use Aventus\Transpiler\Tools\Type;
 use PhpParser\Modifiers;
 use PhpParser\Node\Stmt\Class_;

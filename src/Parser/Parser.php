@@ -110,12 +110,20 @@ class Parser
                     if (!Type::exportToTypesript($class, ProjectConfig::$config->exportHttpRouteByDefault)) {
                         continue;
                     }
-                    
+                    $class->isController = true;
+
+                    $uri = $route->uri();
+                    if ($class->getMethod("overrideUri") != null) {
+                        $classDone = $app->make($class->getFullname());
+                        $overrideUri = $classDone->overrideUri($uri);
+                        $uri = $overrideUri[0];
+                        $class->additionalFcts["getUri"] = ['/** @inheritdoc */', 'public override getUri(): string { return "' . $overrideUri[1] . '"; }'];
+                    }
+
                     if (!Type::exportToTypesript($methodInfo, ProjectConfig::$config->exportHttpRouteByDefault)) {
                         continue;
                     }
-                    
-                    $class->isController = true;
+
                     $methodInfo->isExported = true;
                     $methods = [];
                     foreach ($route->methods() as $method) {
@@ -139,13 +147,6 @@ class Parser
                         $parameters[$_param] = $type;
                     }
 
-                    $uri = $route->uri();
-                    if ($class->getMethod("overrideUri") != null) {
-                        $classDone = $app->make($class->getFullname());
-                        $overrideUri = $classDone->overrideUri($uri);
-                        $uri = $overrideUri[0];
-                        $class->additionalFcts["getUri"] = ['/** @inheritdoc */', 'public override getUri(): string { return "' . $overrideUri[1] . '"; }'];
-                    }
                     $methodInfo->ctrlInfo[] = new PHPClassMethodCtrlInfo(
                         $uri,
                         $methods,

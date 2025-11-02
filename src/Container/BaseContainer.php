@@ -12,8 +12,10 @@ use Aventus\Transpiler\Config\ProjectConfig;
 use Aventus\Transpiler\Config\ProjectConfigReplacerPart;
 use Aventus\Transpiler\Parser\PHPClassMethod;
 use Aventus\Transpiler\Writer\FileWriterHelper;
+use Carbon\Carbon;
 use DateTime;
 use Exception;
+use Illuminate\Support\Carbon as SupportCarbon;
 use Illuminate\Validation\Rules\Enum;
 use PhpParser\Node\Scalar\String_;
 
@@ -239,6 +241,8 @@ abstract class BaseContainer
         else if ($fullName == "string") $result = "string";
         else if ($fullName == Enum::class) $result = "Aventus.Enum";
         else if ($fullName == DateTime::class) $result = "Date";
+        else if ($fullName == Carbon::class) $result = "Date";
+        else if ($fullName == SupportCarbon::class) $result = "Date";
         else if ($fullName == "array") {
             $result = "any[]";
             $isFull = true;

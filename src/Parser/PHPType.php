@@ -209,13 +209,15 @@ class PHPType
     {
         if ($name == "isInternal") {
             if ($this->_isInternal == null) {
-                $this->_isInternal = Parser::$config->isInternal($this->fullname);
+                if (isset($this->fullname))
+                    $this->_isInternal = Parser::$config->isInternal($this->fullname);
             }
             return $this->_isInternal;
         }
         if ($name == "symbol") {
             if ($this->_symbol == null) {
-                $this->_symbol = ClassManager::getInstance()->loadSymbolByFullname($this->fullname);
+                if (isset($this->fullname))
+                    $this->_symbol = ClassManager::getInstance()->loadSymbolByFullname($this->fullname);
             }
             return $this->_symbol;
         }
