@@ -217,7 +217,7 @@ class FileToWrite
             }
 
             foreach ($container->importedFiles as $path => $customImports) {
-                $relativePath = Path::getRelativePath($currentFileName, $path);
+                $relativePath = file_exists($path) ? Path::getRelativePath($currentFileName, $path) : $path;
                 if (!array_key_exists($relativePath, $this->importByPath)) {
                     $this->importByPath[$relativePath] = [];
                 }

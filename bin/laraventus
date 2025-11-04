@@ -7,7 +7,7 @@ require __DIR__ . '/../src/Tools/functions.php';
 use Aventus\Transpiler\Parser\Parser;
 use Aventus\Transpiler\Writer\FileToWrite;
 
-$path =  __DIR__ . '/../../../../aventus.php.avt';
+$path = getcwd();
 if (count($argv) >= 2) {
     $path = $argv[1];
 }

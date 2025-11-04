@@ -124,7 +124,7 @@ class HttpRouteContainer
 
     public function write(): string
     {
-
+        $isAventus = ProjectConfig::$config->isAventus;
         $result = [];
         $bodyKey = "body";
         if (count($this->parametersBodyAndType) > 0 || $this->typeBody != null) {
@@ -152,7 +152,13 @@ class HttpRouteContainer
         $params = implode(", ", array_map(fn($k, $v) => $k . ': ' . $v, array_keys($this->parametersUrlAndType), $this->parametersUrlAndType));
 
         $fctDesc = $this->parent->getAccessibility($this->method) . $this->overrideTxt . "async " . $this->name . "(" . $params . "): @resultType {";
-        $request = "const request = new Aventus.HttpRequest(`\${this.getPrefix()}" . $this->route . "`, Aventus.HttpMethod." . strtoupper($this->httpMethods[0]) . ");";
+        if ($isAventus) {
+            $request = "const request = new Aventus.HttpRequest(`\${this.getPrefix()}" . $this->route . "`, Aventus.HttpMethod." . strtoupper($this->httpMethods[0]) . ");";
+        } else {
+            $request = "const request = new HttpRequest(`\${this.getPrefix()}" . $this->route . "`, HttpMethod." . strtoupper($this->httpMethods[0]) . ");";
+            $this->parent->addImport("@aventusjs/main/Aventus", "HttpRequest");
+            $this->parent->addImport("@aventusjs/main/Aventus", "HttpMethod");
+        }
         $body = "";
         if (count($this->parametersBodyAndType) > 0 || $this->typeBody != null) {
             $body = "request.setBody(" . $bodyKey . ");";
@@ -163,30 +169,60 @@ class HttpRouteContainer
         $typeTxt = $this->parent->getTypeName($returnType);
         if (count($returnType->unions) == 0 && $returnType->symbol instanceof PHPClass) {
             if ($returnType->symbol->extends(AventusResource::class)) {
-                $fctDesc = str_replace("@resultType", "Promise<Aventus.ResultWithError<$typeTxt>>", $fctDesc);
+                if ($isAventus) {
+                    $fctDesc = str_replace("@resultType", "Promise<Aventus.ResultWithError<$typeTxt>>", $fctDesc);
+                } else {
+                    $fctDesc = str_replace("@resultType", "Promise<ResultWithError<$typeTxt>>", $fctDesc);
+                    $this->parent->addImport("@aventusjs/main/Aventus", "ResultWithError");
+                }
                 $returnTxt = "return await request.queryJSON<$typeTxt>(this.router);";
                 $typeTxt = "";
             } else if ($returnType->symbol->is(TextResponse::class)) {
-                $fctDesc = str_replace("@resultType", "Promise<Aventus.ResultWithError<string>>", $fctDesc);
+                if ($isAventus) {
+                    $fctDesc = str_replace("@resultType", "Promise<Aventus.ResultWithError<string>>", $fctDesc);
+                } else {
+                    $fctDesc = str_replace("@resultType", "Promise<ResultWithError<string>>", $fctDesc);
+                    $this->parent->addImport("@aventusjs/main/Aventus", "ResultWithError");
+                }
                 $returnTxt = "return await request.queryTxt(this.router);";
                 $typeTxt = "";
             } else if (
                 $returnType->symbol->is(StreamedResponse::class) || $returnType->symbol->is(BinaryFileResponse::class)
             ) {
-                $fctDesc = str_replace("@resultType", "Promise<Aventus.ResultWithError<Blob>>", $fctDesc);
+                if ($isAventus) {
+                    $fctDesc = str_replace("@resultType", "Promise<Aventus.ResultWithError<Blob>>", $fctDesc);
+                } else {
+                    $fctDesc = str_replace("@resultType", "Promise<ResultWithError<Blob>>", $fctDesc);
+                    $this->parent->addImport("@aventusjs/main/Aventus", "ResultWithError");
+                }
                 $returnTxt = "return await request.queryBlob(this.router);";
                 $typeTxt = "";
             } else {
-                $fctDesc = str_replace("@resultType", "Promise<Aventus.ResultWithError<$typeTxt>>", $fctDesc);
+                if ($isAventus) {
+                    $fctDesc = str_replace("@resultType", "Promise<Aventus.ResultWithError<$typeTxt>>", $fctDesc);
+                } else {
+                    $fctDesc = str_replace("@resultType", "Promise<ResultWithError<$typeTxt>>", $fctDesc);
+                    $this->parent->addImport("@aventusjs/main/Aventus", "ResultWithError");
+                }
                 $returnTxt = "return await request.queryJSON<$typeTxt>(this.router);";
                 $typeTxt = "";
             }
         } else if ($typeTxt == "void") {
             $returnTxt = "return await request.queryVoid(this.router);";
-            $fctDesc = str_replace("@resultType", "Promise<Aventus.VoidWithError>", $fctDesc);
+            if ($isAventus) {
+                $fctDesc = str_replace("@resultType", "Promise<Aventus.VoidWithError>", $fctDesc);
+            } else {
+                $fctDesc = str_replace("@resultType", "Promise<VoidWithError>", $fctDesc);
+                $this->parent->addImport("@aventusjs/main/Aventus", "VoidWithError");
+            }
             $typeTxt = "";
         } else {
-            $fctDesc = str_replace("@resultType", "Promise<Aventus.ResultWithError<$typeTxt>>", $fctDesc);
+            if ($isAventus) {
+                $fctDesc = str_replace("@resultType", "Promise<Aventus.ResultWithError<$typeTxt>>", $fctDesc);
+            } else {
+                $fctDesc = str_replace("@resultType", "Promise<ResultWithError<$typeTxt>>", $fctDesc);
+                $this->parent->addImport("@aventusjs/main/Aventus", "ResultWithError");
+            }
             $returnTxt = "return await request.queryJSON<$typeTxt>(this.router);";
             $typeTxt = "";
         }

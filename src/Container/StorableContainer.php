@@ -32,13 +32,25 @@ class StorableContainer extends BaseClassContainer
     protected function addImplements(callable $add)
     {
         if (!$this->isInterface) {
-            $add("Aventus.IData");
+            if(ProjectConfig::$config->isAventus) {
+                $add("Aventus.IData");
+            }
+            else {
+                $add("IData");
+                $this->addImport("@aventusjs/main/Aventus", "IData");
+            }
         }
     }
     protected function addExtends(callable $add)
     {
         if ($this->isInterface) {
-            $add("Aventus.IData");
+            if(ProjectConfig::$config->isAventus) {
+                $add("Aventus.IData");
+            }
+            else {
+                $add("IData");
+                $this->addImport("@aventusjs/main/Aventus", "IData");
+            }
         }
     }
 

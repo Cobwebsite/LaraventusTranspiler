@@ -56,7 +56,7 @@ class HttpControllerContainer extends BaseContainer
     protected function writeAction(): string
     {
 
-
+        $isAventus = ProjectConfig::$config->isAventus;
         $result = [];
         if (ProjectConfig::$config->useNamespace && strlen($this->namespace) > 0) {
             $this->addIndent();
@@ -94,7 +94,12 @@ class HttpControllerContainer extends BaseContainer
 
         $routerConfig = ProjectConfig::$config->httpRouter;
         if ($routerConfig->createRouter) {
-            $this->addTxtOpen("public constructor(router?: Aventus.HttpRouter) {", $result);
+            if ($isAventus) {
+                $this->addTxtOpen("public constructor(router?: Aventus.HttpRouter) {", $result);
+            } else {
+                $this->addImport("@aventusjs/main/Aventus", "HttpRouter");
+                $this->addTxtOpen("public constructor(router?: HttpRouter) {", $result);
+            }
             $this->addTxt("super(router ?? new " . $routerConfig->routerName . "());", $result);
             $this->addTxtClose("}", $result);
             $outputPath = ProjectConfig::$config->outputPath . DIRECTORY_SEPARATOR . $routerConfig->routerName . ".lib.avt";
@@ -119,9 +124,15 @@ class HttpControllerContainer extends BaseContainer
 
     private function getExtension(): string
     {
-        $extend = "Aventus.HttpRoute";
+        if (ProjectConfig::$config->isAventus) {
+            $extend = "Aventus.HttpRoute";
+        } else {
+            $extend = "HttpRoute";
+        }
         if ($this->symbol instanceof PHPClass && $this->symbol->parent != null) {
             $extend = $this->getTypeName($this->symbol->parent->type);
+        } else if (!ProjectConfig::$config->isAventus) {
+            $this->addImport("@aventusjs/main/Aventus", "HttpRoute");
         }
 
         $txt = "extends " . $extend . " ";

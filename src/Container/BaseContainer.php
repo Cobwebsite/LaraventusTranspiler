@@ -3,6 +3,18 @@
 namespace Aventus\Transpiler\Container;
 
 use Aventus\Laraventus\Attributes\Rename;
+use Aventus\Laraventus\Controllers\ModelController;
+use Aventus\Laraventus\Exceptions\LaraventusErrorEnum;
+use Aventus\Laraventus\Helpers\AventusError;
+use Aventus\Laraventus\Models\AventusFile;
+use Aventus\Laraventus\Models\AventusImage;
+use Aventus\Laraventus\Models\AventusModel;
+use Aventus\Laraventus\Requests\AventusRequest;
+use Aventus\Laraventus\Requests\IdsManyRequest;
+use Aventus\Laraventus\Requests\ItemsManyRequest;
+use Aventus\Laraventus\Resources\AventusAutoBindResource;
+use Aventus\Laraventus\Resources\AventusModelResource;
+use Aventus\Laraventus\Resources\AventusResource;
 use Aventus\Laraventus\Tools\Console;
 use Aventus\Transpiler\Parser\PHPClass;
 use Aventus\Transpiler\Parser\PHPClassPropriete;
@@ -15,8 +27,10 @@ use Aventus\Transpiler\Writer\FileWriterHelper;
 use Carbon\Carbon;
 use DateTime;
 use Exception;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Carbon as SupportCarbon;
 use Illuminate\Validation\Rules\Enum;
+use JsonSerializable;
 use PhpParser\Node\Scalar\String_;
 
 abstract class BaseContainer
@@ -230,6 +244,108 @@ abstract class BaseContainer
 
     public function getVariantTypeName(PHPType $type, int $depth, bool $genericExtendsConstraint, string $name, bool &$isFull): string
     {
+        if (!ProjectConfig::$config->isAventus) {
+            return $this->getVariantTypeNameTs($type, $depth, $genericExtendsConstraint, $name, $isFull);
+        } else {
+            return $this->getVariantTypeNameAventus($type, $depth, $genericExtendsConstraint, $name, $isFull);
+        }
+    }
+    public function getVariantTypeNameTs(PHPType $type, int $depth, bool $genericExtendsConstraint, string $name, bool &$isFull): string
+    {
+        $isFull = false;
+        $fullName = $type->fullname;
+        $isNullable = $type->isNullable;
+        $isArray = $type->isArray;
+        $result = $name;
+        if ($fullName == "int") $result = "number";
+        else if ($fullName == "float") $result = "number";
+        else if ($fullName == "bool") $result = "boolean";
+        else if ($fullName == "string") $result = "string";
+        else if ($fullName == Enum::class) {
+            $result = "Enum";
+            $this->addImport("@aventusjs/main/Aventus", "Enum");
+        } else if ($fullName == DateTime::class) $result = "Date";
+        else if ($fullName == Carbon::class) $result = "Date";
+        else if ($fullName == SupportCarbon::class) $result = "Date";
+        else if ($fullName == "array") {
+            $result = "any[]";
+            $isFull = true;
+        } else if ($fullName == UploadedFile::class) $result = "File";
+        else if ($fullName == AventusModel::class) {
+            $result = "Data";
+            $this->addImport("@aventusjs/main/Aventus", "Data");
+        } else if ($fullName == AventusRequest::class) $result = "";
+        else if ($fullName == AventusModelResource::class) {
+            $result = "Data";
+            $this->addImport("@aventusjs/main/Aventus", "Data");
+            $isFull = true;
+        } else if ($fullName == AventusResource::class) {
+            $result = "Data";
+            $this->addImport("@aventusjs/main/Aventus", "Data");
+            $isFull = true;
+        } else if ($fullName == AventusAutoBindResource::class) {
+            $result = "Data";
+            $this->addImport("@aventusjs/main/Aventus", "Data");
+            $isFull = true;
+        } else if ($fullName == AventusFile::class) {
+            $result = "AventusFile";
+            $this->addImport("@aventusphp/main/AventusPhp", "AventusFile");
+        } else if ($fullName == AventusImage::class) {
+            $result = "AventusImage";
+            $this->addImport("@aventusphp/main/AventusPhp", "AventusImage");
+        } else if ($fullName == AventusError::class) {
+            $result = "AventusError";
+            $this->addImport("@aventusphp/main/AventusPhp", "AventusError");
+        } else if ($fullName == ModelController::class) {
+            $result = "ModelController";
+            $this->addImport("@aventusphp/main/AventusPhp", "ModelController");
+        } else if ($fullName == LaraventusErrorEnum::class) {
+            $result = "LaraventusErrorEnum";
+            $this->addImport("@aventusphp/main/AventusPhp", "LaraventusErrorEnum");
+        } else if ($fullName == IdsManyRequest::class) {
+            $result = "IdsManyRequest";
+            $this->addImport("@aventusphp/main/AventusPhp", "IdsManyRequest");
+        } else if ($fullName == ItemsManyRequest::class) {
+            $result = "ItemsManyRequest";
+            $this->addImport("@aventusphp/main/AventusPhp", "ItemsManyRequest");
+        } else if ($fullName == JsonSerializable::class) $result = "";
+        else if (
+            $fullName == "list" ||
+            $fullName == "Illuminate\\Database\\Eloquent\\Collection" ||
+            $fullName == "Illuminate\Support\Collection"
+        ) {
+            $isArray = true;
+            if (count($type->generics) == 0) {
+                $result = "any";
+            } else {
+                $result = $this->getTypeName($type->generics[count($type->generics) - 1], $depth, $genericExtendsConstraint);
+            }
+            $isFull = true;
+        }
+
+        if ($type->symbol) {
+            $attr = $type->symbol->getAttribute(Rename::class);
+            if ($attr != null) {
+                $expr = $attr->args[0]->value;
+                if ($expr instanceof String_) {
+                    $result = $expr->value;
+                }
+            }
+        }
+
+        if ($isArray) {
+            $result .= "[]";
+        }
+
+        if ($isNullable && !str_ends_with($result, "?")) {
+            $result .= "?";
+        }
+
+        $result = $this->applyReplacer(ProjectConfig::$config->replacer->all, $fullName, $result) ?? "";
+        return $this->customReplacer($type, $fullName, $result) ?? "";
+    }
+    public function getVariantTypeNameAventus(PHPType $type, int $depth, bool $genericExtendsConstraint, string $name, bool &$isFull): string
+    {
         $isFull = false;
         $fullName = $type->fullname;
         $isNullable = $type->isNullable;
@@ -246,26 +362,26 @@ abstract class BaseContainer
         else if ($fullName == "array") {
             $result = "any[]";
             $isFull = true;
-        } else if ($fullName == "Illuminate\\Http\\UploadedFile") $result = "File";
-        else if ($fullName == "Aventus\\Laraventus\\Models\\AventusModel") $result = "Aventus.Data";
-        else if ($fullName == "Aventus\\Laraventus\\Requests\\AventusRequest") $result = "";
-        else if ($fullName == "Aventus\\Laraventus\\Resources\\AventusModelResource") {
+        } else if ($fullName == UploadedFile::class) $result = "File";
+        else if ($fullName == AventusModel::class) $result = "Aventus.Data";
+        else if ($fullName == AventusRequest::class) $result = "";
+        else if ($fullName == AventusModelResource::class) {
             $result = "Aventus.Data";
             $isFull = true;
-        } else if ($fullName == "Aventus\\Laraventus\\Resources\\AventusResource") {
+        } else if ($fullName == AventusResource::class) {
             $result = "Aventus.Data";
             $isFull = true;
-        } else if ($fullName == "Aventus\\Laraventus\\Resources\\AventusAutoBindResource") {
+        } else if ($fullName == AventusAutoBindResource::class) {
             $result = "Aventus.Data";
             $isFull = true;
-        } else if ($fullName == "Aventus\\Laraventus\\Models\\AventusFile") $result = "AventusPhp.AventusFile";
-        else if ($fullName == "Aventus\\Laraventus\\Models\\AventusImage") $result = "AventusPhp.AventusImage";
-        else if ($fullName == "Aventus\\Laraventus\\Helpers\\AventusError") $result = "AventusPhp.AventusError";
-        else if ($fullName == "Aventus\\Laraventus\\Controllers\\ModelController") $result = "AventusPhp.ModelController";
-        else if ($fullName == "Aventus\\Laraventus\\Exceptions\\LaraventusErrorEnum") $result = "AventusPhp.LaraventusErrorEnum";
-        else if ($fullName == "Aventus\\Laraventus\\Requests\\IdsManyRequest") $result = "AventusPhp.IdsManyRequest";
-        else if ($fullName == "Aventus\\Laraventus\\Requests\\ItemsManyRequest") $result = "AventusPhp.ItemsManyRequest";
-        else if ($fullName == "JsonSerializable") $result = "";
+        } else if ($fullName == AventusFile::class) $result = "AventusPhp.AventusFile";
+        else if ($fullName == AventusImage::class) $result = "AventusPhp.AventusImage";
+        else if ($fullName == AventusError::class) $result = "AventusPhp.AventusError";
+        else if ($fullName == ModelController::class) $result = "AventusPhp.ModelController";
+        else if ($fullName == LaraventusErrorEnum::class) $result = "AventusPhp.LaraventusErrorEnum";
+        else if ($fullName == IdsManyRequest::class) $result = "AventusPhp.IdsManyRequest";
+        else if ($fullName == ItemsManyRequest::class) $result = "AventusPhp.ItemsManyRequest";
+        else if ($fullName == JsonSerializable::class) $result = "";
         else if (
             $fullName == "list" ||
             $fullName == "Illuminate\\Database\\Eloquent\\Collection" ||

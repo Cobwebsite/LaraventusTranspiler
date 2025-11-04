@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ed61d8fc38e89a21f35dce52c50fe281",
+    "content-hash": "54742640bb1c143ef9f7b537cc806a7c",
     "packages": [
         {
             "name": "aventus/laraventus",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Cobwebsite/Laraventus.git",
-                "reference": "355c0b8416c18e44d13b5a0a4ae40a6316f5d654"
+                "reference": "5188889636a69c2b5055db5b6ee3752433406dfd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Cobwebsite/Laraventus/zipball/355c0b8416c18e44d13b5a0a4ae40a6316f5d654",
-                "reference": "355c0b8416c18e44d13b5a0a4ae40a6316f5d654",
+                "url": "https://api.github.com/repos/Cobwebsite/Laraventus/zipball/5188889636a69c2b5055db5b6ee3752433406dfd",
+                "reference": "5188889636a69c2b5055db5b6ee3752433406dfd",
                 "shasum": ""
             },
             "require": {
@@ -52,9 +52,9 @@
             "description": "A Laravel overlay providing extra tools and abstractions to accelerate application development.",
             "support": {
                 "issues": "https://github.com/Cobwebsite/Laraventus/issues",
-                "source": "https://github.com/Cobwebsite/Laraventus/tree/1.0.0"
+                "source": "https://github.com/Cobwebsite/Laraventus/tree/1.0.1"
             },
-            "time": "2025-09-23T12:51:00+00:00"
+            "time": "2025-11-02T20:54:58+00:00"
         },
         {
             "name": "brick/math",
