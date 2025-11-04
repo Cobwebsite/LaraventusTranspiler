@@ -20,6 +20,6 @@
     "require": {
         "nikic/php-parser": "^5.4",
         "phpstan/phpdoc-parser": "^2.0",
-        "aventus/laraventus": "^1.1"
+        "aventus/laraventus": "^1.0.1"
     }
 }
