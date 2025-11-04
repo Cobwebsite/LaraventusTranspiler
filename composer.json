@@ -1,7 +1,7 @@
 {
     "name": "aventus/transpiler",
     "type": "library",
-    "version": "0.0.1",
+    "description": "A transpiler to transform you php code to Aventus or Ts code.",
     "license": "MIT",
     "autoload": {
         "psr-4": {
@@ -13,6 +13,9 @@
             "name": "Cobwebsite",
             "email": "info@cobwebsite.ch"
         }
+    ],
+    "bin": [
+        "bin/laraventus"
     ],
     "require": {
         "nikic/php-parser": "^5.4",
