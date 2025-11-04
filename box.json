@@ -1,5 +1,5 @@
 {
-    "main": "bin/laraventus",
+    "main": "bin/laraventusBuild",
     "output": "PhptoTypescript.phar",
     "chmod": "0755",
     "directories": [
