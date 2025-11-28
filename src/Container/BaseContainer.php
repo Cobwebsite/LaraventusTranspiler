@@ -459,7 +459,7 @@ abstract class BaseContainer
                     $result .= " extends " . implode(", ", $extends);
                 }
                 if ($type->defaultGenericValue) {
-                    $defaultType = $this->getTypeName($constraint, $depth + 1, $genericExtendsConstraint);
+                    $defaultType = $this->getTypeName($type->defaultGenericValue, $depth + 1, $genericExtendsConstraint);
                     if ($defaultType != "") {
                         $result .= " = " . $defaultType;
                     }
